@@ -1,0 +1,96 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.12'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+ext {
+    assertjVersion = '3.23.1'
+    awaitilityVersion = '4.2.0'
+    googleJsr305Version = '3.0.2'
+    hamcrestVersion = '2.2'
+    hibernateValidationVersion = '8.0.0.Final'
+    jacksonBomVersion = '2.14.2'
+    jaywayJsonPathVersion = '2.7.0'
+    junit4Version = '4.13.2'
+    junitJupiterVersion = '5.9.2'
+    kafkaVersion = '3.3.2'
+    log4jVersion = '2.19.0'
+    micrometerDocsVersion = "1.0.1"
+    micrometerVersion = '1.10.7'
+    micrometerTracingVersion = '1.0.6'
+    mockitoVersion = '4.8.1'
+    reactorVersion = '2022.0.7'
+    scalaVersion = '2.13'
+    springBootVersion = '3.0.6' // docs module
+    springDataVersion = '2022.0.6'
+    springRetryVersion = '2.0.1'
+    springVersion = '6.0.9'
+    zookeeperVersion = '3.6.3'
+
+}
+
+group = 'com.violetbeach'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/release' }
+    maven { url 'https://repo.spring.io/milestone' }
+    if (version.endsWith('SNAPSHOT')) {
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
+}
+
+dependencies {
+    implementation "com.google.code.findbugs:jsr305:$googleJsr305Version"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation "org.apache.kafka:kafka-server-common:$kafkaVersion"
+
+    // To avoid compiler warnings about @API annotations in JUnit code
+    testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-reflect'
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    testImplementation("org.awaitility:awaitility:$awaitilityVersion") {
+        exclude group: 'org.hamcrest'
+    }
+    testImplementation "org.hamcrest:hamcrest-core:$hamcrestVersion"
+    implementation "org.assertj:assertj-core:$assertjVersion"
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-test'
+    implementation ("org.springframework.retry:spring-retry:$springRetryVersion") {
+        exclude group: 'org.springframework'
+    }
+
+    implementation ("org.apache.zookeeper:zookeeper:$zookeeperVersion") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'log4j'
+    }
+    implementation "org.apache.kafka:kafka-clients:$kafkaVersion:test"
+    implementation "org.apache.kafka:kafka-metadata:$kafkaVersion"
+    implementation "org.apache.kafka:kafka-streams-test-utils:$kafkaVersion"
+    implementation "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion"
+    implementation "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion:test"
+    implementation 'org.junit.jupiter:junit-jupiter-api'
+    implementation 'org.junit.platform:junit-platform-launcher'
+    implementation "org.hamcrest:hamcrest-core:$hamcrestVersion"
+    implementation "org.mockito:mockito-core:$mockitoVersion"
+    implementation ("junit:junit:$junit4Version") {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    implementation "org.apache.logging.log4j:log4j-core:$log4jVersion"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
