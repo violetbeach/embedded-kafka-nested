@@ -92,23 +92,19 @@ public class EmbeddedKafkaCondition implements ExecutionCondition, AfterAllCallb
 			EmbeddedKafka embedded = AnnotatedElementUtils.findMergedAnnotation(element.get(), EmbeddedKafka.class);
 			// When running in a spring test context, the EmbeddedKafkaContextCustomizer will create the broker.
 			if (embedded != null) {
-				EmbeddedKafkaBroker broker = getBrokerFromStore(context);
-				if (broker == null) {
-					broker = createBroker(embedded);
-					BROKERS.set(broker);
-					getStore(context).put(EMBEDDED_BROKER, broker);
-				}
+
 			}
 		}
 		return ConditionEvaluationResult.enabled("");
 	}
 
 	private boolean springTestContext(AnnotatedElement annotatedElement) {
-		return AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, ExtendWith.class)
+		boolean present = AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, ExtendWith.class)
 				.stream()
 				.filter(extended -> Arrays.asList(extended.value()).contains(SpringExtension.class))
 				.findFirst()
 				.isPresent();
+		return present;
 	}
 
 	@SuppressWarnings("unchecked")

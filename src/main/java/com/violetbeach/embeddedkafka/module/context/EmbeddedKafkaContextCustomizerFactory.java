@@ -16,14 +16,16 @@
 
 package com.violetbeach.embeddedkafka.module.context;
 
-import org.springframework.context.ConfigurableApplicationContext;
+import org.junit.jupiter.engine.discovery.predicates.IsNestedTestClass;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.test.context.ContextConfigurationAttributes;
 import org.springframework.test.context.ContextCustomizer;
 import org.springframework.test.context.ContextCustomizerFactory;
-import org.springframework.test.context.MergedContextConfiguration;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The {@link ContextCustomizerFactory} implementation to produce a
@@ -36,13 +38,26 @@ import java.util.List;
  */
 public class EmbeddedKafkaContextCustomizerFactory implements ContextCustomizerFactory {
 
+	private final IsNestedTestClass isNestedTestClass = new IsNestedTestClass();
+
 	@Override
 	public ContextCustomizer createContextCustomizer(Class<?> testClass,
 			List<ContextConfigurationAttributes> configAttributes) {
-
 		EmbeddedKafka embeddedKafka =
 				AnnotatedElementUtils.findMergedAnnotation(testClass, EmbeddedKafka.class);
-		return embeddedKafka != null ? new EmbeddedKafkaContextCustomizer(embeddedKafka) : null;
+		if(embeddedKafka != null) {
+			return new EmbeddedKafkaContextCustomizer(embeddedKafka);
+		}
+
+		Class<?> search = testClass;
+		while(isNestedTestClass.test(search)) {
+			search = search.getDeclaringClass();
+			embeddedKafka = AnnotatedElementUtils.findMergedAnnotation(search, EmbeddedKafka.class);
+			if(embeddedKafka != null) {
+				return new EmbeddedKafkaContextCustomizer(embeddedKafka);
+			}
+		}
+		return null;
 	}
 
 }

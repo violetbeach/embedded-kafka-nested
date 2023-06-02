@@ -44,6 +44,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.junit.jupiter:junit-jupiter-engine:5.0.0'
+
     implementation "com.google.code.findbugs:jsr305:$googleJsr305Version"
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
