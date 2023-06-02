@@ -39,15 +39,10 @@ public class EmbeddedKafkaContextCustomizerFactory implements ContextCustomizerF
 	@Override
 	public ContextCustomizer createContextCustomizer(Class<?> testClass,
 			List<ContextConfigurationAttributes> configAttributes) {
-		return new ContextCustomizer() {
-			@Override
-			public void customizeContext(ConfigurableApplicationContext context, MergedContextConfiguration mergedConfig) {
 
-			}
-		};
-//		EmbeddedKafka embeddedKafka =
-//				AnnotatedElementUtils.findMergedAnnotation(testClass, EmbeddedKafka.class);
-//		return embeddedKafka != null ? new EmbeddedKafkaContextCustomizer(embeddedKafka) : null;
+		EmbeddedKafka embeddedKafka =
+				AnnotatedElementUtils.findMergedAnnotation(testClass, EmbeddedKafka.class);
+		return embeddedKafka != null ? new EmbeddedKafkaContextCustomizer(embeddedKafka) : null;
 	}
 
 }
